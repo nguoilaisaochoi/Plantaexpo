@@ -51,7 +51,11 @@ const ListPlant = (props) => {
   };
   return (
     <View style={{ flex: 1, backgroundColor: "white" }}>
-      <Header txt="Cây trồng" img={require("../assets/img/cartnobg.png")} />
+      <Header
+        txt="Cây trồng"
+        img={require("../assets/img/cartnobg.png")}
+        imgl={require("../assets/img/backnobg.png")}
+      />
       <View style={{ marginLeft: 20, marginTop: 20 }}>
         <FlatList
           data={Data}
@@ -67,6 +71,7 @@ const ListPlant = (props) => {
         keyExtractor={(item) => item.id}
         showsHorizontalScrollIndicator={false}
         numColumns={2}
+        contentContainerStyle={{ alignItems: "center" }}
       />
     </View>
   );
@@ -88,7 +93,8 @@ const styles = StyleSheet.create({
   txt4: {
     marginTop: 5,
     color: "#221F1F",
-    fontSize: 16,
+    flexWrap: "wrap",
+    fontSize: 15,
     fontFamily: "Lato Medium",
   },
   bgimg: {
@@ -98,8 +104,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   bgitem: {
-    width: 155,
-    height: 217,
+    width: width*0.4,
+    height: height*0.3,
     margin: 10,
     padding: 5,
   },

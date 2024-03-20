@@ -93,11 +93,10 @@ const styles = StyleSheet.create({
   },
   FlatList: {
     alignSelf: "center",
-    alignItems: "center",
   },
   bgitem: {
-    width: 155,
-    height: 217,
+    width: width * 0.4,
+    height: height * 0.3,
     margin: 10,
     padding: 5,
   },

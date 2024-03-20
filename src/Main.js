@@ -4,7 +4,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import Home from './Home';
-import Setting from './Setting';
+import Setting from './Profile';
 import Detail from './Detail';
 import ListPlant from './ListPlant';
 import Cart from './Cart';

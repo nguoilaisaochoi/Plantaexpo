@@ -8,7 +8,11 @@ const baseFontSize = height * 0.03;
 const Detail = () => {
   return (
     <View style={{ backgroundColor: "white", flex: 1, justifyContent: "space-between" }}>
-      <Header txt="Detail Page" img={require("../assets/img/cartnobg.png")} />
+      <Header
+        txt="Detail Page"
+        img={require("../assets/img/cartnobg.png")}
+        imgl={require("../assets/img/backnobg.png")}
+      />
       <View style={styles.view1}>
         <Image style={styles.img3} source={require("../assets/img/rightitem.png")} />
         <Image style={styles.img4} source={require("../assets/img/rightitem.png")} />
