@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from "react-native";
 import React from "react";
-import Header from "./Header";
+import Header from "./Compo/Header";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
 const { fontSize } = Dimensions.get("window");

@@ -9,7 +9,7 @@ import {
   Dimensions,
 } from "react-native";
 import React, { useEffect, useState } from "react";
-import Header from "./Header";
+import Header from "./Compo/Header";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
 const ListPlant = (props) => {

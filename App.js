@@ -5,6 +5,7 @@ import { Appprovider } from "./src/Appcontext";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
+import Pay from "./src/Pay";
 SplashScreen.preventAutoHideAsync();
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({

@@ -8,11 +8,16 @@ import {
   Dimensions,
 } from "react-native";
 import React, { useContext, useState } from "react";
-import Header from "./Header";
+import Header from "./Compo/Header";
+import Total from "./Compo/Total";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
-const Cart = () => {
+const Cart = (props) => {
+  const { navigation } = props;
   const [Data] = useState(data);
+  const gotopay = () => {
+    navigation.navigate("Pay");
+  };
   const renderItems = ({ item }) => {
     const { name, img, type, price } = item;
     return (
@@ -58,19 +63,8 @@ const Cart = () => {
         imgl={require("../assets/img/backnobg.png")}
       />
       <FlatList data={Data} keyExtractor={(item) => item.id} renderItem={renderItems} />
-      <View style={styles.view4}>
-        <View style={styles.view5}>
-          <Text style={[styles.txt4, { opacity: 0.5 }]}>Tạm tính</Text>
-          <Text style={[styles.txt4]}>500.000đ</Text>
-        </View>
-        <TouchableOpacity style={styles.touch1} activeOpacity={0.5}>
-          <Text style={[styles.txt4, { color: "white", fontSize: 16 }]}>Tiến hành thanh toán</Text>
-          <Image
-            style={{ width: 24, height: 24 }}
-            source={require("../assets/img/rightwhite.png")}
-          />
-        </TouchableOpacity>
-      </View>
+
+      <Total txt1={'Tạm tính'} price1={'000.000đ'} txt4={'Tiến hành thanh toán'}/>
     </View>
   );
 };
@@ -98,10 +92,15 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
   },
   view4: {
+    position: "absolute",
     height: height * 0.15,
     padding: "2%",
     justifyContent: "space-between",
     alignItems: "center",
+    backgroundColor: "white",
+    bottom: 0,
+    left: 0,
+    right: 0,
   },
   txt3: {
     fontFamily: "Lato Medium",

@@ -1,6 +1,6 @@
 import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
 import React from "react";
-import Header from "./Header";
+import Header from "./Compo/Header";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
 const Setting = () => {
@@ -50,11 +50,10 @@ const styles = StyleSheet.create({
   view2: {
     paddingLeft: width * 0.04,
   },
-  container: { backgroundColor: "white", flex: 1, justifyContent: "flex-start" },
+  container: { backgroundColor: "white", flex: 1 },
   view1: {
     height: height * 0.15,
     flexDirection: "row",
-    justifyContent: "flex-start",
     alignItems: "center",
     paddingLeft: width * 0.1,
   },
