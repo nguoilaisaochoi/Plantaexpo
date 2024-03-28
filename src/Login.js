@@ -9,11 +9,13 @@ import {
   Dimensions,
   Platform,
   ScrollView,
+  Alert,
 } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 
 import { Appcontext } from "./Appcontext";
 import { LinearGradient } from "expo-linear-gradient";
+import AxiosInstance from "./API/AxiosInstance";
 
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
@@ -22,12 +24,33 @@ const Login = (props) => {
   const [username, Setusername] = useState("");
   const [password, Setpassword] = useState("");
   const [titleerror, Settitleerror] = useState("");
-
+  const [showpass, setShowpass] = useState(false);
+  const showpassword = () => {
+    setShowpass(!showpass);
+  };
   const checkdata = () => {
     if (username == "" || password == "") {
       Settitleerror("Không được bỏ trống!");
     } else {
-      setIsLogin(true);
+      checklogin();
+    }
+  };
+  const checklogin = async () => {
+    try {
+      const body = {
+        email: username,
+        password: password,
+      };
+      const response = await AxiosInstance.post("user/login", body);
+      console.log(response.data);
+      if (response.data.messenger == "true") {
+        setIsLogin(true);
+      } else {
+        Alert.alert("Thông báo", "Thông tin tài khoản không đúng");
+      }
+    } catch (error) {
+      Alert.alert("Lỗi", error.message);
+      console.log(error.message);
     }
   };
   const { navigation } = props;
@@ -69,14 +92,21 @@ const Login = (props) => {
             <TextInput
               style={{ width: "80%" }}
               placeholder="Mật khẩu"
+              secureTextEntry={showpass == false ? true : false}
               onChangeText={(data) => {
                 Setpassword(data), Settitleerror("");
               }}
             />
-            <Image
-              style={{ width: 29, height: 24 }}
-              source={require("../assets/img/eye_off.png")}
-            />
+            <TouchableOpacity activeOpacity={0.8} onPress={() => showpassword()}>
+              <Image
+                style={{ width: 29, height: 24 }}
+                source={
+                  showpass == false
+                    ? require("../assets/img/eye_off.png")
+                    : require("../assets/img/eye_on.png")
+                }
+              />
+            </TouchableOpacity>
           </View>
           {!!titleerror && <Text style={styles.txt1}>{titleerror}</Text>}
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
@@ -237,4 +267,3 @@ const styles = StyleSheet.create({
     marginTop: height >= 712 ? -height / 6 : -height / 4,
   },
 });
-console.log(height);

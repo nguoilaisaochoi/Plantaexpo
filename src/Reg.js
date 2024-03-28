@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Dimensions,
   ScrollView,
+  Alert,
 } from "react-native";
 import React, { useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
@@ -16,6 +17,8 @@ import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from "react-native-responsive-screen";
+import AxiosInstance from "./API/AxiosInstance";
+import { useNavigation } from "@react-navigation/native";
 const Reg = (props) => {
   const { navigation } = props;
   const [hoten, Sethoten] = useState("");
@@ -27,7 +30,27 @@ const Reg = (props) => {
     if (hoten == "" || username == "" || password == "" || sdt == "") {
       Settitleerror("Không được bỏ trống!");
     } else {
-      setIsLogin(true);
+      checkreg();
+    }
+  };
+  const checkreg = async () => {
+    try {
+      const body = {
+        name: hoten,
+        email: username,
+        phone: sdt,
+        password: password,
+      };
+      const response = await AxiosInstance.post("user/reg", body);
+      console.log(response.data);
+      if (response.data.messenger == "true") {
+        navigation.navigate("Login");
+      } else {
+        Alert.alert("Thông báo", "Email đã tồn tại");
+      }
+    } catch (error) {
+      Alert.alert("Lỗi", error.message);
+      console.log(error.message);
     }
   };
   const goback = () => {

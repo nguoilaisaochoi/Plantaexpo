@@ -1,9 +1,23 @@
-import { View, Text, StyleSheet, Dimensions, Image } from "react-native";
-import React from "react";
+import { View, Text, StyleSheet, Dimensions, Image, Alert } from "react-native";
+import React, { useContext } from "react";
 import Header from "./Compo/Header";
+import { useNavigation } from "@react-navigation/native";
+import { Appcontext } from "./Appcontext";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
 const Setting = () => {
+  const { setIsLogin } = useContext(Appcontext);
+  const gologin = () => {
+    Alert.alert(
+      "Xác nhận đăng xuất",
+      "Bạn có chắc muốn đăng xuất?",
+      [
+        { text: "Huỷ", style: "cancel" },
+        { text: "Đồng ý", onPress: () => setIsLogin(false) },
+      ],
+      { cancelable: false }
+    );
+  };
   return (
     <View style={styles.container}>
       <Header txt={"PROFILE"} />
@@ -25,7 +39,9 @@ const Setting = () => {
         <Text style={[styles.txt1, { opacity: 0.5 }]}>Bảo mật và điều khoản</Text>
         <Text style={styles.txt2}>Điều khoản và điều kiện</Text>
         <Text style={styles.txt2}>Chính sách quyền riêng tư</Text>
-        <Text style={[styles.txt2, { color: "#FF0000" }]}>Đăng xuất</Text>
+        <Text onPress={() => gologin()} style={[styles.txt2, { color: "#FF0000" }]}>
+          Đăng xuất
+        </Text>
       </View>
     </View>
   );
