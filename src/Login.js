@@ -43,7 +43,7 @@ const Login = (props) => {
       };
       const response = await AxiosInstance.post("user/login", body);
       console.log(response.data);
-      if (response.data.messenger == "true") {
+      if (response.data.messenger == true) {
         setIsLogin(true);
       } else {
         Alert.alert("Thông báo", "Thông tin tài khoản không đúng");

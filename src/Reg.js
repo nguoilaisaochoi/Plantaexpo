@@ -43,7 +43,7 @@ const Reg = (props) => {
       };
       const response = await AxiosInstance.post("user/reg", body);
       console.log(response.data);
-      if (response.data.messenger == "true") {
+      if (response.data.messenger == true) {
         navigation.navigate("Login");
       } else {
         Alert.alert("Thông báo", "Email đã tồn tại");
