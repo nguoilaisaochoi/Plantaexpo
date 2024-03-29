@@ -4,7 +4,6 @@ import axios from "axios";
 const AxiosInstance = axios.create({
   baseURL: "http://192.168.1.104:3000/",
   responseType: "json",
-  withCredentials: "true",
 });
 
 export default AxiosInstance;

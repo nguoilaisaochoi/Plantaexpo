@@ -7,6 +7,8 @@ const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
 const Setting = () => {
   const { setIsLogin } = useContext(Appcontext);
+  const { user } = useContext(Appcontext);
+  console.log(user.data.name);
   const gologin = () => {
     Alert.alert(
       "Xác nhận đăng xuất",
@@ -24,8 +26,8 @@ const Setting = () => {
       <View style={styles.view1}>
         <Image style={styles.img} source={require("../assets/img/avatar.png")} />
         <View style={styles.view2}>
-          <Text>Nguyễn Lê Hùng</Text>
-          <Text style={[styles.txt2, { opacity: 0.5 }]}>hn123@gmail.com</Text>
+          <Text>{user.data.name}</Text>
+          <Text style={[styles.txt2, { opacity: 0.5 }]}>{user.data.email}</Text>
         </View>
       </View>
       <View style={[styles.view3, { height: height * 0.3 }]}>
@@ -51,6 +53,9 @@ export default Setting;
 const styles = StyleSheet.create({
   txt2: {
     fontFamily: "Lato Medium",
+    paddingRight: "2%",
+    paddingTop: "2%",
+    paddingBottom: "2%",
   },
   view3: {
     paddingLeft: width * 0.1,

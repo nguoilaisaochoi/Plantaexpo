@@ -26,6 +26,10 @@ const Reg = (props) => {
   const [sdt, setSdt] = useState("");
   const [password, Setpassword] = useState("");
   const [titleerror, Settitleerror] = useState("");
+  const [showpass, setShowpass] = useState(false);
+  const showpassword = () => {
+    setShowpass(!showpass);
+  };
   const checkdata = () => {
     if (hoten == "" || username == "" || password == "" || sdt == "") {
       Settitleerror("Không được bỏ trống!");
@@ -43,10 +47,12 @@ const Reg = (props) => {
       };
       const response = await AxiosInstance.post("user/reg", body);
       console.log(response.data);
-      if (response.data.messenger == true) {
+      if (response.data.data == 400) {
+        Alert.alert("Thông báo", "Email đã tồn tại");
+      } else if (response.data.status == true) {
         navigation.navigate("Login");
       } else {
-        Alert.alert("Thông báo", "Email đã tồn tại");
+        Alert.alert("Lỗi", "Xảy ra sự cố");
       }
     } catch (error) {
       Alert.alert("Lỗi", error.message);
@@ -75,7 +81,7 @@ const Reg = (props) => {
             ]}
           >
             <TextInput
-              style={{ width: "90%" }}
+              style={{ width: "90%", height: "90%" }}
               placeholder="Họ tên"
               onChangeText={(data) => {
                 Sethoten(data);
@@ -92,7 +98,7 @@ const Reg = (props) => {
             ]}
           >
             <TextInput
-              style={{ width: "90%" }}
+              style={{ width: "90%", height: "90%" }}
               placeholder="Email"
               onChangeText={(data) => {
                 Setusername(data);
@@ -109,8 +115,9 @@ const Reg = (props) => {
             ]}
           >
             <TextInput
-              style={{ width: "90%" }}
-              placeholder="Số điẹn thoại"
+              style={{ width: "90%", height: "90%" }}
+              placeholder="Số điện thoại"
+              keyboardType="phone-pad"
               onChangeText={(data) => {
                 setSdt(data);
                 Settitleerror("");
@@ -126,17 +133,24 @@ const Reg = (props) => {
             ]}
           >
             <TextInput
-              style={{ width: "80%" }}
+              style={{ width: "85%", height: "90%" }}
               placeholder="Mật khẩu"
+              secureTextEntry={showpass == false ? true : false}
               onChangeText={(data) => {
                 Setpassword(data);
                 Settitleerror("");
               }}
             />
-            <Image
-              style={{ width: 29, height: 24 }}
-              source={require("../assets/img/eye_off.png")}
-            />
+            <TouchableOpacity style={{ padding: "5%" }} activeOpacity={0.8} onPress={showpassword}>
+              <Image
+                style={{ width: 30, height: 25 }}
+                source={
+                  showpass == false
+                    ? require("../assets/img/eye_off.png")
+                    : require("../assets/img/eye_on.png")
+                }
+              />
+            </TouchableOpacity>
           </View>
           {!!titleerror && <Text style={styles.txt1}>Không được bỏ trống!</Text>}
           <Text style={styles.txtagre}>
@@ -182,7 +196,7 @@ const Reg = (props) => {
             <Image style={{ width: 32, height: 32 }} source={require("../assets/img/gg.png")} />
             <Image style={{ width: 32, height: 32 }} source={require("../assets/img/fb.png")} />
           </View>
-          <Text style={[styles.txtdk, { color: "black" }]}>
+          <Text style={[styles.txtdk, { color: "black" }]} onPress={() => goback()}>
             Tôi đã có tài khoản <Text style={[styles.txtdk, { color: "#009245" }]}>Đăng nhập</Text>
           </Text>
         </View>
@@ -194,6 +208,9 @@ const Reg = (props) => {
 export default Reg;
 
 const styles = StyleSheet.create({
+  touch: {
+    padding: "2%",
+  },
   txt1: {
     color: "#CE0000",
     fontSize: 14,
@@ -247,7 +264,7 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     borderRadius: 10,
     paddingLeft: 14,
-    paddingRight: 14,
+    paddingRight: 10,
     marginBottom: 10,
     height: height * 0.065,
   },

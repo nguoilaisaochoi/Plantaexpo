@@ -25,6 +25,7 @@ const Login = (props) => {
   const [password, Setpassword] = useState("");
   const [titleerror, Settitleerror] = useState("");
   const [showpass, setShowpass] = useState(false);
+  const { setUser } = useContext(Appcontext);
   const showpassword = () => {
     setShowpass(!showpass);
   };
@@ -43,7 +44,8 @@ const Login = (props) => {
       };
       const response = await AxiosInstance.post("user/login", body);
       console.log(response.data);
-      if (response.data.messenger == true) {
+      if (response.data.status == true) {
+        setUser(response.data);
         setIsLogin(true);
       } else {
         Alert.alert("Thông báo", "Thông tin tài khoản không đúng");
@@ -76,7 +78,7 @@ const Login = (props) => {
             ]}
           >
             <TextInput
-              style={{ width: "90%" }}
+              style={{ width: "85%", height: "90%" }}
               placeholder="Nhập email hoặc số điện thoại"
               onChangeText={(data) => {
                 Setusername(data), Settitleerror("");
@@ -90,14 +92,18 @@ const Login = (props) => {
             ]}
           >
             <TextInput
-              style={{ width: "80%" }}
+              style={{ width: "85%", height: "90%" }}
               placeholder="Mật khẩu"
               secureTextEntry={showpass == false ? true : false}
               onChangeText={(data) => {
                 Setpassword(data), Settitleerror("");
               }}
             />
-            <TouchableOpacity activeOpacity={0.8} onPress={() => showpassword()}>
+            <TouchableOpacity
+              style={{ padding: "5%" }}
+              activeOpacity={0.8}
+              onPress={() => showpassword()}
+            >
               <Image
                 style={{ width: 29, height: 24 }}
                 source={
@@ -110,7 +116,7 @@ const Login = (props) => {
           </View>
           {!!titleerror && <Text style={styles.txt1}>{titleerror}</Text>}
           <View style={{ flexDirection: "row", justifyContent: "space-between" }}>
-            <View style={{ flexDirection: "row" }}>
+            <View style={{ flexDirection: "row", alignItems: "center" }}>
               <Image
                 style={{ width: 22, height: 22 }}
                 source={require("../assets/img/check.png")}
