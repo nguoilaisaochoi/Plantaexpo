@@ -12,6 +12,9 @@ import Search from "./Search";
 import Noti from "./Noti";
 import Pay from "./Pay";
 import Notification from "./Notification";
+import EditProfile from "./EditProfile";
+import Transactionhis from "./Transactionhis";
+import DetailTrans from "./DetailTrans";
 
 const Main = () => {
   const Stack = createNativeStackNavigator();
@@ -22,6 +25,9 @@ const Main = () => {
       <Stack.Screen name="ListPlant" component={ListPlant} />
       <Stack.Screen name="Pay" component={Pay} />
       <Stack.Screen name="Cart" component={Cart} options={{ animation: "fade" }} />
+      <Stack.Screen name="EditProfile" component={EditProfile} />
+      <Stack.Screen name="Transactionhis" component={Transactionhis} />
+      <Stack.Screen name="DetailTrans" component={DetailTrans} />
     </Stack.Navigator>
   );
 };

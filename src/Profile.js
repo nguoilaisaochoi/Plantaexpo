@@ -8,7 +8,7 @@ const { width } = Dimensions.get("window");
 const Setting = () => {
   const { setIsLogin } = useContext(Appcontext);
   const { user } = useContext(Appcontext);
-  console.log(user.data.name);
+  const navigation = useNavigation();
   const gologin = () => {
     Alert.alert(
       "Xác nhận đăng xuất",
@@ -20,21 +20,31 @@ const Setting = () => {
       { cancelable: false }
     );
   };
+  const gotoeditprofile = () => {
+    navigation.navigate("EditProfile");
+  };
+  const gototranshis = () => {
+    navigation.navigate("Transactionhis");
+  };
   return (
     <View style={styles.container}>
       <Header txt={"PROFILE"} />
       <View style={styles.view1}>
         <Image style={styles.img} source={require("../assets/img/avatar.png")} />
         <View style={styles.view2}>
-          <Text>{user.data.name}</Text>
-          <Text style={[styles.txt2, { opacity: 0.5 }]}>{user.data.email}</Text>
+          <Text>Name</Text>
+          <Text style={[styles.txt2, { opacity: 0.5 }]}>hn123@gmail.com</Text>
         </View>
       </View>
       <View style={[styles.view3, { height: height * 0.3 }]}>
         <Text style={[styles.txt1, { opacity: 0.5 }]}>Chung</Text>
-        <Text style={styles.txt2}>Chỉnh sửa thông tin</Text>
+        <Text onPress={() => gotoeditprofile()} style={styles.txt2}>
+          Chỉnh sửa thông tin
+        </Text>
         <Text style={styles.txt2}>Cẩm nang trồng cây</Text>
-        <Text style={styles.txt2}>Lịch sửa giao dịch</Text>
+        <Text onPress={() => gototranshis()} style={styles.txt2}>
+          Lịch sửa giao dịch
+        </Text>
         <Text style={styles.txt2}>Q & A</Text>
       </View>
       <View style={[styles.view3, { marginTop: height * 0.02, height: height * 0.25 }]}>

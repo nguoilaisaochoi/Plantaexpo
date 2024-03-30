@@ -3,13 +3,13 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
-const Total = ({ txt1, price1, txt2, price2, txt3, price3, txt4, txt5 }, props) => {
+const Total = ({ txt1, price1, txt2, price2, txt3, price3, txt4, txt5, txt6, btn6 }, props) => {
   const navigation = useNavigation();
   const gotopay = () => {
     navigation.navigate("Pay");
   };
   return (
-    <View style={[styles.view4, { minHeight: txt4 ? height * 0.15 : height * 0.2 }]}>
+    <View style={[styles.view4, { minHeight: txt4 ? height * 0.15 : height * 0.1 }]}>
       {!!txt1 && (
         <View style={styles.view5}>
           <Text style={[styles.txt4, { opacity: 0.5 }]}>{txt1}</Text>
@@ -42,12 +42,23 @@ const Total = ({ txt1, price1, txt2, price2, txt3, price3, txt4, txt5 }, props) 
           <Text style={[styles.txt4, { color: "white", fontSize: 16 }]}>{txt5}</Text>
         </TouchableOpacity>
       )}
+      {!!txt6 && (
+        <Text onPress={btn6} style={styles.txt7}>
+          {txt6}
+        </Text>
+      )}
     </View>
   );
 };
 
 export default Total;
 const styles = StyleSheet.create({
+  txt7: {
+    fontFamily: "Lato Regular",
+    textDecorationLine: "underline",
+    fontSize: 15,
+    padding: "3%",
+  },
   view4: {
     position: "absolute",
     padding: "2%",
@@ -62,6 +73,7 @@ const styles = StyleSheet.create({
     width: "92%",
     flexDirection: "row",
     justifyContent: "space-between",
+    marginBottom: "2%",
   },
   txt4: {
     fontFamily: "Lato Medium",
