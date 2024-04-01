@@ -3,6 +3,7 @@ import React, { useContext } from "react";
 import Header from "./Compo/Header";
 import { useNavigation } from "@react-navigation/native";
 import { Appcontext } from "./Appcontext";
+import QA from "./QA";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
 const Setting = () => {
@@ -26,6 +27,9 @@ const Setting = () => {
   const gototranshis = () => {
     navigation.navigate("Transactionhis");
   };
+  const gotoqa = () => {
+    navigation.navigate("Q&A");
+  };
   return (
     <View style={styles.container}>
       <Header txt={"PROFILE"} />
@@ -45,7 +49,9 @@ const Setting = () => {
         <Text onPress={() => gototranshis()} style={styles.txt2}>
           Lịch sửa giao dịch
         </Text>
-        <Text style={styles.txt2}>Q & A</Text>
+        <Text onPress={() => gotoqa()} style={styles.txt2}>
+          Q & A
+        </Text>
       </View>
       <View style={[styles.view3, { marginTop: height * 0.02, height: height * 0.25 }]}>
         <Text style={[styles.txt1, { opacity: 0.5 }]}>Bảo mật và điều khoản</Text>

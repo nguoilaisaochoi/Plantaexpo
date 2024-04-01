@@ -37,7 +37,7 @@ const Login = (props) => {
     }
   };
   const checklogin = async () => {
-    setIsLogin(true)
+    setIsLogin(true);
     try {
       const body = {
         email: username,

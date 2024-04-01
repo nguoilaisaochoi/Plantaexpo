@@ -15,6 +15,7 @@ import Notification from "./Notification";
 import EditProfile from "./EditProfile";
 import Transactionhis from "./Transactionhis";
 import DetailTrans from "./DetailTrans";
+import QA from "./QA";
 
 const Main = () => {
   const Stack = createNativeStackNavigator();
@@ -28,6 +29,7 @@ const Main = () => {
       <Stack.Screen name="EditProfile" component={EditProfile} />
       <Stack.Screen name="Transactionhis" component={Transactionhis} />
       <Stack.Screen name="DetailTrans" component={DetailTrans} />
+      <Stack.Screen name="Q&A" component={QA} />
     </Stack.Navigator>
   );
 };
