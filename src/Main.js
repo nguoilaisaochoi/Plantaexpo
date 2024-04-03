@@ -22,14 +22,18 @@ const Main = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Hometabs" component={HomeTabs} />
-      <Stack.Screen name="Detail" component={Detail} />
-      <Stack.Screen name="ListPlant" component={ListPlant} />
-      <Stack.Screen name="Pay" component={Pay} />
+      <Stack.Screen name="Detail" options={{ animation: "fade_from_bottom" }} component={Detail} />
+      <Stack.Screen name="ListPlant" options={{ animation: "fade" }} component={ListPlant} />
+      <Stack.Screen name="Pay" options={{ animation: "slide_from_right" }} component={Pay} />
       <Stack.Screen name="Cart" component={Cart} options={{ animation: "fade" }} />
-      <Stack.Screen name="EditProfile" component={EditProfile} />
-      <Stack.Screen name="Transactionhis" component={Transactionhis} />
-      <Stack.Screen name="DetailTrans" component={DetailTrans} />
-      <Stack.Screen name="Q&A" component={QA} />
+      <Stack.Screen name="EditProfile" options={{ animation: "fade" }} component={EditProfile} />
+      <Stack.Screen
+        name="Transactionhis"
+        options={{ animation: "fade" }}
+        component={Transactionhis}
+      />
+      <Stack.Screen name="DetailTrans" options={{ animation: "fade" }} component={DetailTrans} />
+      <Stack.Screen name="Q&A" options={{ animation: "fade" }} component={QA} />
     </Stack.Navigator>
   );
 };

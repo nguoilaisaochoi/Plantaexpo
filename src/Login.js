@@ -33,11 +33,11 @@ const Login = (props) => {
     if (username == "" || password == "") {
       Settitleerror("Không được bỏ trống!");
     } else {
+      setIsLogin(true);
       checklogin();
     }
   };
   const checklogin = async () => {
-    setIsLogin(true);
     try {
       const body = {
         email: username,

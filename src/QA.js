@@ -17,9 +17,7 @@ const QA = () => {
   const rotaZ = useSharedValue(-90);
   const rotaZ2 = useSharedValue(-90);
   const [selectedindex, setselectedIndex] = useState("");
-  const view2 = useAnimatedStyle(() => {
-    return {};
-  });
+
   const imgStyle = useAnimatedStyle(() => {
     return {
       width: 28,

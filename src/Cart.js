@@ -6,27 +6,57 @@ import {
   Image,
   TouchableOpacity,
   Dimensions,
+  Alert,
 } from "react-native";
 import React, { useContext, useState } from "react";
 import Header from "./Compo/Header";
 import Total from "./Compo/Total";
+import Animated, { withSequence } from "react-native-reanimated";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
 const Cart = (props) => {
   const { navigation } = props;
   const [Data] = useState(data);
+  const [selectedItems, setSelectedItems] = useState([]);
   const gotopay = () => {
     navigation.navigate("Pay");
   };
+
+  const xoa = () => {
+    Alert.alert("Xác nhận xoá");
+  };
+
   const renderItems = ({ item }) => {
-    const { name, img, type, price } = item;
+    const { id, name, img, type, price } = item;
+    const isSelected = selectedItems.includes(id);
+    const toggleSelectItem = (itemId) => {
+      if (selectedItems.includes(itemId)) {
+        setSelectedItems(selectedItems.filter((item) => item !== itemId));
+        console.log(
+          `danh sách sau khi loại item ${selectedItems.filter((item) => item !== itemId)}`
+        );
+      } else {
+        setSelectedItems([...selectedItems, itemId]);
+      }
+    };
     return (
-      <View style={styles.view1}>
-        <Image style={styles.img1} source={require("../assets/img/checked.png")} />
+      <TouchableOpacity
+        style={styles.view1}
+        activeOpacity={0.6}
+        onPress={() => toggleSelectItem(id)}
+      >
+        <Image
+          style={styles.img1}
+          source={
+            isSelected
+              ? require("../assets/img/checked.png")
+              : require("../assets/img/noncheck.png")
+          }
+        />
         <View style={styles.view2}>
           <Image style={{ width: 77, height: 77 }} source={img} />
         </View>
-        <View style={{ flexDirection: "column", marginLeft: 15 }}>
+        <View style={styles.view6}>
           <View>
             <Text style={styles.txt3}>
               {name} | <Text style={{ color: "#7D7B7B" }}>{type}</Text>
@@ -49,10 +79,12 @@ const Cart = (props) => {
                 />
               </TouchableOpacity>
             </View>
-            <Text style={styles.txt2}>Xoá</Text>
+            <Text style={styles.txt2} onPress={() => xoa()}>
+              Xoá
+            </Text>
           </View>
         </View>
-      </View>
+      </TouchableOpacity>
     );
   };
   return (
@@ -64,7 +96,7 @@ const Cart = (props) => {
       />
       <FlatList data={Data} keyExtractor={(item) => item.id} renderItem={renderItems} />
 
-      <Total txt1={'Tạm tính'} price1={'000.000đ'} txt4={'Tiến hành thanh toán'}/>
+      <Total txt1={"Tạm tính"} price1={"000.000đ"} txt4={"Tiến hành thanh toán"} />
     </View>
   );
 };
@@ -74,6 +106,7 @@ const styles = StyleSheet.create({
   txt4: {
     fontFamily: "Lato Medium",
   },
+  view6: { flexDirection: "column", marginLeft: 15,  width: "50%" },
   touch1: {
     height: height * 0.08,
     width: width * 0.9,
@@ -111,6 +144,11 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontFamily: "Lato Medium",
     textDecorationLine: "underline",
+    marginLeft: "6%",
+    width: "50%",
+    height: "100%",
+    textAlign: "center",
+    paddingTop: "3%",
   },
   txt1: {
     // 2
@@ -137,10 +175,10 @@ const styles = StyleSheet.create({
   },
   img1: {
     //img plant
-    width: height * 0.037,
-    height: height * 0.036,
-    marginLeft: 23,
-    marginRight: 25,
+    width: height * 0.031,
+    height: height * 0.03,
+    marginLeft: "5%",
+    marginRight: "7%",
   },
   view1: {
     //list item 117
@@ -150,6 +188,7 @@ const styles = StyleSheet.create({
     margin: 10,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent:'space-around'
   },
 });
 var data = [
