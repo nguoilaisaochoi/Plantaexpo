@@ -1,15 +1,17 @@
 import { View, Text, StyleSheet, Dimensions, Image, Alert } from "react-native";
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import Header from "./Compo/Header";
 import { useNavigation } from "@react-navigation/native";
 import { Appcontext } from "./Appcontext";
 import QA from "./QA";
+import { useSelector } from "react-redux";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
 const Setting = () => {
   const { setIsLogin } = useContext(Appcontext);
   const { user } = useContext(Appcontext);
   const navigation = useNavigation();
+  const { loginData, loginStatus } = useSelector((state) => state.login);
   const gologin = () => {
     Alert.alert(
       "Xác nhận đăng xuất",
@@ -21,6 +23,7 @@ const Setting = () => {
       { cancelable: false }
     );
   };
+
   const gotoeditprofile = () => {
     navigation.navigate("EditProfile");
   };
@@ -36,8 +39,8 @@ const Setting = () => {
       <View style={styles.view1}>
         <Image style={styles.img} source={require("../assets/img/avatar.png")} />
         <View style={styles.view2}>
-          <Text>Name</Text>
-          <Text style={[styles.txt2, { opacity: 0.5 }]}>hn123@gmail.com</Text>
+          <Text>{loginData.data.name}</Text>
+          <Text style={[styles.txt2, { opacity: 0.5 }]}>{loginData.data.email}</Text>
         </View>
       </View>
       <View style={[styles.view3, { height: height * 0.3 }]}>

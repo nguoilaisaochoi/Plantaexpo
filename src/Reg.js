@@ -9,16 +9,12 @@ import {
   ScrollView,
   Alert,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { LinearGradient } from "expo-linear-gradient";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
-import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from "react-native-responsive-screen";
-import AxiosInstance from "./API/AxiosInstance";
-import { useNavigation } from "@react-navigation/native";
+import { useDispatch, useSelector } from "react-redux";
+import { DangKyTaiKhoan } from "./Reducer/RegisterReducer";
 const Reg = (props) => {
   const { navigation } = props;
   const [hoten, Sethoten] = useState("");
@@ -27,6 +23,10 @@ const Reg = (props) => {
   const [password, Setpassword] = useState("");
   const [titleerror, Settitleerror] = useState("");
   const [showpass, setShowpass] = useState(false);
+  const [isRegistered, setIsRegistered] = useState(false);
+  const dispatch = useDispatch();
+  const { registerData, registerStatus } = useSelector((state) => state.register);
+
   const showpassword = () => {
     setShowpass(!showpass);
   };
@@ -35,8 +35,19 @@ const Reg = (props) => {
       Settitleerror("Không được bỏ trống!");
     } else {
       checkreg();
+      setIsRegistered(true);
     }
   };
+  useEffect(() => {
+    console.log(registerStatus);
+    if (registerStatus == "succeeded" && isRegistered) {
+      if (registerData.data == null) {
+        Alert.alert("Email tồn tại");
+      } else {
+        goback();
+      }
+    }
+  }, [registerStatus]);
   const checkreg = async () => {
     try {
       const body = {
@@ -45,15 +56,7 @@ const Reg = (props) => {
         phone: sdt,
         password: password,
       };
-      const response = await AxiosInstance.post("user/reg", body);
-      console.log(response.data);
-      if (response.data.data == 400) {
-        Alert.alert("Thông báo", "Email đã tồn tại");
-      } else if (response.data.status == true) {
-        navigation.navigate("Login");
-      } else {
-        Alert.alert("Lỗi", "Xảy ra sự cố");
-      }
+      dispatch(DangKyTaiKhoan(body));
     } catch (error) {
       Alert.alert("Lỗi", error.message);
       console.log(error.message);
@@ -317,4 +320,3 @@ const styles = StyleSheet.create({
     marginTop: height >= 712 ? -height / 4 : -height / 3.5,
   },
 });
-console.log(`manhinh dk${height} 768x992`);

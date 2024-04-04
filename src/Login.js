@@ -16,6 +16,8 @@ import React, { useContext, useEffect, useState } from "react";
 import { Appcontext } from "./Appcontext";
 import { LinearGradient } from "expo-linear-gradient";
 import AxiosInstance from "./API/AxiosInstance";
+import { useDispatch, useSelector } from "react-redux";
+import { Dangnhap } from "./Reducer/LoginReducer";
 
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
@@ -25,7 +27,9 @@ const Login = (props) => {
   const [password, Setpassword] = useState("");
   const [titleerror, Settitleerror] = useState("");
   const [showpass, setShowpass] = useState(false);
-  const { setUser } = useContext(Appcontext);
+  const dispatch = useDispatch();
+  const { loginData, loginStatus } = useSelector((state) => state.login);
+  const [Login, setLogin] = useState(false);
   const showpassword = () => {
     setShowpass(!showpass);
   };
@@ -33,24 +37,27 @@ const Login = (props) => {
     if (username == "" || password == "") {
       Settitleerror("Không được bỏ trống!");
     } else {
-      setIsLogin(true);
       checklogin();
+      setLogin(true);
     }
   };
+  useEffect(() => {
+    console.log(loginStatus);
+    if (loginStatus == "succeeded" && Login) {
+      if (loginData.data != null) {
+        setIsLogin(true);
+      } else {
+        Alert.alert("Thông báo", loginData.messenger);
+      }
+    }
+  }, [loginStatus]);
   const checklogin = async () => {
     try {
       const body = {
         email: username,
         password: password,
       };
-      const response = await AxiosInstance.post("user/login", body);
-      console.log(response.data);
-      if (response.data.status == true) {
-        setUser(response.data);
-        setIsLogin(true);
-      } else {
-        Alert.alert("Thông báo", "Thông tin tài khoản không đúng");
-      }
+      dispatch(Dangnhap(body));
     } catch (error) {
       Alert.alert("Lỗi", error.message);
       console.log(error.message);

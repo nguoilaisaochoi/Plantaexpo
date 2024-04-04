@@ -6,6 +6,8 @@ import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { useCallback } from "react";
 import Pay from "./src/Pay";
+import { Provider } from "react-redux";
+import { store } from "./src/Store/Store";
 SplashScreen.preventAutoHideAsync();
 export default function App() {
   const [fontsLoaded, fontError] = useFonts({
@@ -26,13 +28,15 @@ export default function App() {
     return null;
   }
   return (
-    <Appprovider>
-      <SafeAreaView style={{ flex: 1 }}>
-        <StatusBar translucent backgroundColor={"rgba(0,0,0,0)"} />
-        <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-          <AppNavigation />
-        </View>
-      </SafeAreaView>
-    </Appprovider>
+    <Provider store={store}>
+      <Appprovider>
+        <SafeAreaView style={{ flex: 1 }}>
+          <StatusBar translucent backgroundColor={"rgba(0,0,0,0)"} />
+          <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+            <AppNavigation />
+          </View>
+        </SafeAreaView>
+      </Appprovider>
+    </Provider>
   );
 }

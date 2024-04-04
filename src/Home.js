@@ -3,16 +3,19 @@ import {
   Text,
   Image,
   StyleSheet,
-  ScrollView,
   FlatList,
   TouchableOpacity,
   Dimensions,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Sanpham } from "./Reducer/ProductReducer";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
 const Home = (props) => {
   const { navigation } = props;
+  const dispatch = useDispatch();
+  const { productData, productStatus } = useSelector((state) => state.product);
   const gotodetail = () => {
     navigation.navigate("Detail");
   };
@@ -22,13 +25,21 @@ const Home = (props) => {
   const gotocart = () => {
     navigation.navigate("Cart");
   };
-  const [Data] = useState(data);
+
+  useEffect(() => {
+    dispatch(Sanpham());
+  }, []);
   const renderItem = ({ item }) => {
-    const { id, name, type, price, img } = item;
+    const { _id, name, type, price, image } = item;
     return (
       <TouchableOpacity style={styles.bgitem} activeOpacity={0.5} onPress={() => gotodetail()}>
         <View style={styles.bgimg}>
-          <Image style={{ width: "100%", height: 134 }} source={img} />
+          <Image
+            style={{ flex: 1 }}
+            source={{
+              uri: `${image}`,
+            }}
+          />
         </View>
         <Text style={styles.txt4}>{name}</Text>
         <Text style={styles.txt5}>{type}</Text>
@@ -55,9 +66,9 @@ const Home = (props) => {
       </View>
 
       <FlatList
-        data={Data}
+        data={productData}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         showsVerticalScrollIndicator={false}
         numColumns={2}
         contentContainerStyle={styles.FlatList}
@@ -96,9 +107,10 @@ const styles = StyleSheet.create({
   },
   bgitem: {
     width: width * 0.4,
-    height: height * 0.3,
+    minHeight: height * 0.3,
     margin: 10,
     padding: 5,
+    justifyContent: "space-between",
   },
   txt3: {
     // Cây trồng
@@ -142,48 +154,3 @@ const styles = StyleSheet.create({
     height: 46,
   },
 });
-
-var data = [
-  {
-    id: 1,
-    name: "Spider Plant",
-    type: "Ưa bóng",
-    price: "250.000",
-    img: require("../assets/img/item.png"),
-  },
-  {
-    id: 2,
-    name: "Spider Plant2",
-    type: "Ưa bóng",
-    price: "280.000",
-    img: require("../assets/img/item.png"),
-  },
-  {
-    id: 3,
-    name: "Spider Plant2",
-    type: "Ưa bóng",
-    price: "280.000",
-    img: require("../assets/img/item.png"),
-  },
-  {
-    id: 4,
-    name: "Spider Plant2",
-    type: "Ưa bóng",
-    price: "280.000",
-    img: require("../assets/img/item.png"),
-  },
-  {
-    id: 5,
-    name: "Spider Plant2",
-    type: "Ưa bóng",
-    price: "280.000",
-    img: require("../assets/img/item.png"),
-  },
-  {
-    id: 6,
-    name: "Spider Plant2",
-    type: "Ưa bóng",
-    price: "280.000",
-    img: require("../assets/img/item.png"),
-  },
-];
