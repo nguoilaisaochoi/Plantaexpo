@@ -1,51 +1,103 @@
-import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from "react-native";
-import React from "react";
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  TouchableOpacity,
+  Dimensions,
+  ToastAndroid,
+} from "react-native";
+import React, { useEffect, useState } from "react";
 import Header from "./Compo/Header";
+import { useDispatch, useSelector } from "react-redux";
+import { DSGioHang, DSGioHangAdd } from "./Reducer/CartReducer";
+
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
 const { fontSize } = Dimensions.get("window");
 const baseFontSize = height * 0.03;
 const Detail = () => {
+  const dispatch = useDispatch();
+  const { productdetailData, productdetailStatus } = useSelector((state) => state.product);
+  const { loginData, loginStatus } = useSelector((state) => state.user);
+  const { cartAddStatus } = useSelector((state) => state.cart);
+  const [count, setCount] = useState(1);
+  const [onpress, setOnpress] = useState(false);
+  const tangcount = () => {
+    if (count >= productdetailData.quantity) {
+      return;
+    } else {
+      setCount(count + 1);
+    }
+  };
+  const giamcount = () => {
+    if (count <= 1) {
+      return;
+    } else {
+      setCount(count - 1);
+    }
+  };
+  const giohang = () => {
+    const body = {
+      iduser: loginData.data._id,
+      idproduct: productdetailData._id,
+      quantitybuy: count,
+    };
+    dispatch(DSGioHangAdd(body));
+    setOnpress(true);
+  };
+  useEffect(() => {
+    if (cartAddStatus == "succeeded" && onpress) {
+      ToastAndroid.show("Đã thêm vào giỏ hàng", ToastAndroid.SHORT);
+    }
+  }, [cartAddStatus]);
   return (
     <View style={{ backgroundColor: "white", flex: 1, justifyContent: "space-between" }}>
       <Header
-        txt="Detail Page"
+        txt={productdetailData.name}
         img={require("../assets/img/cartnobg.png")}
         imgl={require("../assets/img/backnobg.png")}
       />
       <View style={styles.view1}>
-        <Image style={styles.img3} source={require("../assets/img/rightitem.png")} />
-        <Image style={styles.img4} source={require("../assets/img/rightitem.png")} />
         <View style={styles.view3}>
           {[...Array(3)].map((a, index) => (
             <View key={index} style={styles.view2}></View>
           ))}
         </View>
-        <Image style={styles.img5} source={require("../assets/img/itemdetail.png")} />
+        <View style={styles.img5}>
+          <Image
+            style={{ flex: 1 }}
+            source={{
+              uri: `${productdetailData.image}`,
+            }}
+          />
+        </View>
+        <Image style={styles.img3} source={require("../assets/img/rightitem.png")} />
+        <Image style={styles.img4} source={require("../assets/img/rightitem.png")} />
       </View>
       <View style={styles.view8}>
         <View style={styles.touch1}>
           <Text style={styles.txt2}>Cây trồng</Text>
         </View>
         <View style={styles.touch1}>
-          <Text style={styles.txt2}>Ưa bóng</Text>
+          <Text style={styles.txt2}>{productdetailData.category.name}</Text>
         </View>
       </View>
-      <Text style={styles.txt3}>250.000đ</Text>
+      <Text style={styles.txt3}>{productdetailData.price}đ</Text>
       <View style={styles.view4}>
         <Text style={styles.txt4}>Chi tiết sản phẩm </Text>
       </View>
       <View style={styles.view5}>
         <Text style={styles.txt5}>Kích cỡ </Text>
-        <Text style={styles.txt5}>Nhỏ </Text>
+        <Text style={styles.txt5}>{productdetailData.size}</Text>
       </View>
       <View style={styles.view5}>
         <Text style={styles.txt5}>Xuất xứ </Text>
-        <Text style={styles.txt5}>Châu phi </Text>
+        <Text style={styles.txt5}>{productdetailData.origin}</Text>
       </View>
       <View style={styles.view5}>
         <Text style={styles.txt5}>Tình trạng </Text>
-        <Text style={[styles.txt5, { color: "green" }]}>Còn 156 sp </Text>
+        <Text style={[styles.txt5, { color: "green" }]}>Còn {productdetailData.quantity} sp </Text>
       </View>
 
       <View style={styles.view6}>
@@ -55,24 +107,28 @@ const Detail = () => {
 
       <View style={styles.view6}>
         <View style={styles.view7}>
-          <TouchableOpacity activeOpacity={0.6}>
+          <TouchableOpacity activeOpacity={0.6} onPress={() => giamcount()}>
             <Image
-              style={{ width: width * 0.08, height: height * 0.04 }}
+              style={{ width: width * 0.08, height: height * 0.04, opacity: count == 1 ? 0.5 : 1 }}
               source={require("../assets/img/giam.png")}
             />
           </TouchableOpacity>
-          <Text style={[styles.txt6, { fontSize: 18 }]}>1</Text>
-          <TouchableOpacity activeOpacity={0.6}>
+          <Text style={[styles.txt6, { fontSize: 18 }]}>{count}</Text>
+          <TouchableOpacity activeOpacity={0.6} onPress={() => tangcount()}>
             <Image
-              style={{ width: width * 0.08, height: height * 0.04 }}
+              style={{
+                width: width * 0.08,
+                height: height * 0.04,
+                opacity: count == productdetailData.quantity ? 0.5 : 1,
+              }}
               source={require("../assets/img/tang.png")}
             />
           </TouchableOpacity>
         </View>
-        <Text style={[styles.txt6, { fontSize: baseFontSize }]}>250.000d</Text>
+        <Text style={[styles.txt6, { fontSize: baseFontSize }]}>{productdetailData.price}đ</Text>
       </View>
-      <TouchableOpacity style={styles.touch2} activeOpacity={0.7}>
-        <Text style={styles.txt7}>Chọn mua</Text>
+      <TouchableOpacity onPress={() => giohang()} style={styles.touch2} activeOpacity={0.7}>
+        <Text style={styles.txt7}>Thêm vào giỏ hàng</Text>
       </TouchableOpacity>
     </View>
   );
@@ -84,7 +140,7 @@ const styles = StyleSheet.create({
     marginLeft: height * 0.025,
     flexDirection: "row",
   },
-  img5: { width: 337, height: "100%", alignSelf: "center" },
+  img5: { width: width, height: "100%", backgroundColor: "pink" },
   txt7: {
     // Chọn mua
     color: "white",
@@ -189,8 +245,8 @@ const styles = StyleSheet.create({
     //dot
     bottom: 10,
     alignSelf: "center",
-    width: 10,
-    height: 10,
+    width: 7,
+    height: 7,
     borderRadius: 5,
     backgroundColor: "black",
     margin: 3,

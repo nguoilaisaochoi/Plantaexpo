@@ -17,7 +17,8 @@ import { Appcontext } from "./Appcontext";
 import { LinearGradient } from "expo-linear-gradient";
 import AxiosInstance from "./API/AxiosInstance";
 import { useDispatch, useSelector } from "react-redux";
-import { Dangnhap } from "./Reducer/LoginReducer";
+import { Dangnhap, TTuser } from "./Reducer/UserReducer";
+import Loading from "./Compo/Loading";
 
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
@@ -28,7 +29,7 @@ const Login = (props) => {
   const [titleerror, Settitleerror] = useState("");
   const [showpass, setShowpass] = useState(false);
   const dispatch = useDispatch();
-  const { loginData, loginStatus } = useSelector((state) => state.login);
+  const { loginData, loginStatus } = useSelector((state) => state.user);
   const [Login, setLogin] = useState(false);
   const showpassword = () => {
     setShowpass(!showpass);
@@ -42,26 +43,21 @@ const Login = (props) => {
     }
   };
   useEffect(() => {
-    console.log(loginStatus);
     if (loginStatus == "succeeded" && Login) {
       if (loginData.data != null) {
+        dispatch(TTuser(loginData.data._id));
         setIsLogin(true);
       } else {
         Alert.alert("Thông báo", loginData.messenger);
       }
     }
   }, [loginStatus]);
-  const checklogin = async () => {
-    try {
-      const body = {
-        email: username,
-        password: password,
-      };
-      dispatch(Dangnhap(body));
-    } catch (error) {
-      Alert.alert("Lỗi", error.message);
-      console.log(error.message);
-    }
+  const checklogin = () => {
+    const body = {
+      email: username,
+      password: password,
+    };
+    dispatch(Dangnhap(body));
   };
   const { navigation } = props;
   const gotoreg = () => {

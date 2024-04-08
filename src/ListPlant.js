@@ -12,36 +12,66 @@ import React, { useEffect, useState } from "react";
 import Header from "./Compo/Header";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
+import { useDispatch, useSelector } from "react-redux";
+import { Sanpham, Sanphamdetail } from "./Reducer/ProductReducer";
+import { Loai } from "./Reducer/CategoryReducer";
+import { all } from "axios";
 const ListPlant = (props) => {
   const { navigation } = props;
-  const [Data] = useState(datatype);
-  const [Dataitem] = useState(data);
-  const [selectedindex, setselectedIndex] = useState("1");
-  const gotodetail = () => {
-    navigation.navigate("Detail");
+  const [onPress, setOnpress] = useState(false);
+  const [Data, setData] = useState([]);
+  const [Datacate, setDatacate] = useState([]);
+  const dispatch = useDispatch();
+  const [selectedindex, setselectedIndex] = useState("all");
+  const { productData, productStatus, productdetailStatus } = useSelector((state) => state.product);
+  const { categoryData, categoryStatus } = useSelector((state) => state.category);
+  const gotodetail = (id) => {
+    dispatch(Sanphamdetail(id));
+    setOnpress(true);
   };
+  useEffect(() => {
+    dispatch(Sanpham());
+    dispatch(Loai());
+  }, []);
+
+  useEffect(() => {
+    if (categoryStatus == "succeeded") {
+      if (selectedindex == "all") {
+        setData(productData);
+      } else {
+        const findlist = productData.filter((item) => item.category._id == selectedindex);
+        setData(findlist);
+      }
+      setDatacate([{ _id: "all", name: "Tất cả" }, ...categoryData.data]);
+    }
+  }, [selectedindex]);
+  useEffect(() => {
+    if (productdetailStatus == "succeeded" && onPress) {
+      navigation.navigate("Detail");
+    }
+  }, [productdetailStatus]);
   const renderMenu = ({ item }) => {
     return (
-      <TouchableOpacity onPress={() => setselectedIndex(item.id)} activeOpacity={0.6}>
+      <TouchableOpacity onPress={() => setselectedIndex(item._id)} activeOpacity={0.6}>
         <View
           style={[
             styles.view1,
-            { backgroundColor: item.id == selectedindex ? "#009245" : "white" },
+            { backgroundColor: item._id == selectedindex ? "#009245" : "white" },
           ]}
         >
-          <Text style={[styles.txt1, { color: item.id == selectedindex ? "white" : "#7D7B7B" }]}>
-            {item.type}
+          <Text style={[styles.txt1, { color: item._id == selectedindex ? "white" : "#7D7B7B" }]}>
+            {item.name}
           </Text>
         </View>
       </TouchableOpacity>
     );
   };
   const renderItem = ({ item }) => {
-    const { id, name, type, price, img } = item;
+    const { _id, name, type, price, image } = item;
     return (
-      <TouchableOpacity style={styles.bgitem} activeOpacity={0.5} onPress={() => gotodetail()}>
+      <TouchableOpacity style={styles.bgitem} activeOpacity={0.5} onPress={() => gotodetail(_id)}>
         <View style={styles.bgimg}>
-          <Image style={{ width: "100%", height: 134 }} source={img} />
+          <Image style={{ width: "100%", height: 134 }} source={{ uri: `${image}` }} />
         </View>
         <Text style={styles.txt4}>{name}</Text>
         <Text style={styles.txt5}>{type}</Text>
@@ -58,17 +88,17 @@ const ListPlant = (props) => {
       />
       <View style={{ marginLeft: 20, marginTop: 20 }}>
         <FlatList
-          data={Data}
+          data={Datacate}
           renderItem={renderMenu}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item._id}
           horizontal={true}
           scrollEnabled={false}
         />
       </View>
       <FlatList
-        data={Dataitem}
+        data={Data}
         renderItem={renderItem}
-        keyExtractor={(item) => item.id}
+        keyExtractor={(item) => item._id}
         showsHorizontalScrollIndicator={false}
         numColumns={2}
         contentContainerStyle={{ alignItems: "center" }}
@@ -104,8 +134,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   bgitem: {
-    width: width*0.4,
-    height: height*0.3,
+    width: width * 0.4,
+    height: height * 0.3,
     margin: 10,
     padding: 5,
   },

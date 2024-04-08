@@ -8,42 +8,77 @@ import {
   Dimensions,
   Alert,
 } from "react-native";
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Header from "./Compo/Header";
 import Total from "./Compo/Total";
 import Animated, { withSequence } from "react-native-reanimated";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
+import { useDispatch, useSelector } from "react-redux";
+import { DSGioHang, DSGioHangDel } from "./Reducer/CartReducer";
+
 const Cart = (props) => {
   const { navigation } = props;
-  const [Data] = useState(data);
+  const [Data, setData] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
+  const [DelItem, setDelItem] = useState([]);
+  const dispatch = useDispatch();
+  const { loginData, loginStatus } = useSelector((state) => state.user);
+  const { cartlistData, cartlistStatus, cartDelStatus } = useSelector((state) => state.cart);
+
   const gotopay = () => {
     navigation.navigate("Pay");
   };
-
-  const xoa = () => {
-    Alert.alert("Xác nhận xoá");
+  const delitem = () => {
+    const body = {
+      iduser: loginData.data._id,
+      idproduct: DelItem,
+    };
+    dispatch(DSGioHangDel(body));
   };
 
+  const delmanyitem = () => {
+    const body = {
+      iduser: loginData.data._id,
+      idproduct: selectedItems,
+    };
+    dispatch(DSGioHangDel(body));
+  };
+  useEffect(() => {
+    dispatch(DSGioHang(loginData.data._id));
+    if (cartDelStatus == "succeeded") {
+      dispatch(DSGioHang(loginData.data._id));
+    }
+  }, [cartDelStatus]);
+
+  useEffect(() => {
+    if (cartlistData && cartlistData.data) {
+      setData(cartlistData.data.products);
+    }
+  }, [cartlistStatus]);
   const renderItems = ({ item }) => {
-    const { id, name, img, type, price } = item;
-    const isSelected = selectedItems.includes(id);
+    const { productsId, productname, productimage, productcategory, productprice, quantity } = item;
+    const isSelected = selectedItems.includes(productsId);
     const toggleSelectItem = (itemId) => {
-      if (selectedItems.includes(itemId)) {
-        setSelectedItems(selectedItems.filter((item) => item !== itemId));
-        console.log(
-          `danh sách sau khi loại item ${selectedItems.filter((item) => item !== itemId)}`
-        );
+      const index = selectedItems.indexOf(itemId);
+      if (index !== -1) {
+        console.log(selectedItems);
+        console.log(DelItem);
+        const newSelectedItems = [...selectedItems];
+        newSelectedItems.splice(index, 1);
+        setSelectedItems(newSelectedItems);
       } else {
         setSelectedItems([...selectedItems, itemId]);
       }
     };
+
     return (
       <TouchableOpacity
         style={styles.view1}
         activeOpacity={0.6}
-        onPress={() => toggleSelectItem(id)}
+        onPress={() => {
+          toggleSelectItem(productsId), setDelItem(productsId);
+        }}
       >
         <Image
           style={styles.img1}
@@ -53,16 +88,24 @@ const Cart = (props) => {
               : require("../assets/img/noncheck.png")
           }
         />
+
         <View style={styles.view2}>
-          <Image style={{ width: 77, height: 77 }} source={img} />
+          <View style={{ width: 77, height: 77 }}>
+            <Image
+              style={{ flex: 1 }}
+              source={{
+                uri: `${productimage}`,
+              }}
+            />
+          </View>
         </View>
         <View style={styles.view6}>
           <View>
             <Text style={styles.txt3}>
-              {name} | <Text style={{ color: "#7D7B7B" }}>{type}</Text>
+              {productname} | <Text style={{ color: "#7D7B7B" }}>{productcategory}</Text>
             </Text>
           </View>
-          <Text style={[styles.txt3, { color: "#007537" }]}>{price}đ</Text>
+          <Text style={[styles.txt3, { color: "#007537" }]}>{productprice}đ</Text>
           <View style={styles.view3}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <TouchableOpacity activeOpacity={0.5}>
@@ -71,7 +114,7 @@ const Cart = (props) => {
                   source={require("../assets/img/giam.png")}
                 />
               </TouchableOpacity>
-              <Text style={styles.txt1}>1</Text>
+              <Text style={styles.txt1}>{quantity}</Text>
               <TouchableOpacity activeOpacity={0.5}>
                 <Image
                   style={{ width: width * 0.07, height: height * 0.04 }}
@@ -79,7 +122,7 @@ const Cart = (props) => {
                 />
               </TouchableOpacity>
             </View>
-            <Text style={styles.txt2} onPress={() => xoa()}>
+            <Text style={styles.txt2} onPress={() => delitem()}>
               Xoá
             </Text>
           </View>
@@ -93,20 +136,24 @@ const Cart = (props) => {
         txt="Giỏ hàng"
         imgdel={require("../assets/img/trash.png")}
         imgl={require("../assets/img/backnobg.png")}
+        btn1={delmanyitem}
       />
-      <FlatList data={Data} keyExtractor={(item) => item.id} renderItem={renderItems} />
-
+      <View style={styles.flatlist}>
+        <FlatList data={Data} keyExtractor={(item) => item._id} renderItem={renderItems} />
+      </View>
       <Total txt1={"Tạm tính"} price1={"000.000đ"} txt4={"Tiến hành thanh toán"} />
     </View>
   );
 };
-
 export default Cart;
 const styles = StyleSheet.create({
+  flatlist: {
+    height: "70%",
+  },
   txt4: {
     fontFamily: "Lato Medium",
   },
-  view6: { flexDirection: "column", marginLeft: 15,  width: "50%" },
+  view6: { flexDirection: "column", marginLeft: 15, width: "50%" },
   touch1: {
     height: height * 0.08,
     width: width * 0.9,
@@ -188,7 +235,7 @@ const styles = StyleSheet.create({
     margin: 10,
     flexDirection: "row",
     alignItems: "center",
-    justifyContent:'space-around'
+    justifyContent: "space-around",
   },
 });
 var data = [

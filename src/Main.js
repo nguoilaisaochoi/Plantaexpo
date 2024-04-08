@@ -22,7 +22,7 @@ const Main = () => {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Hometabs" component={HomeTabs} />
-      <Stack.Screen name="Detail" options={{ animation: "fade_from_bottom" }} component={Detail} />
+      <Stack.Screen name="Detail" options={{ animation: "slide_from_bottom" }} component={Detail} />
       <Stack.Screen name="ListPlant" options={{ animation: "fade" }} component={ListPlant} />
       <Stack.Screen name="Pay" options={{ animation: "slide_from_right" }} component={Pay} />
       <Stack.Screen name="Cart" component={Cart} options={{ animation: "fade" }} />

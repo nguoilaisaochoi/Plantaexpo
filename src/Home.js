@@ -9,15 +9,20 @@ import {
 } from "react-native";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Sanpham } from "./Reducer/ProductReducer";
+import { Sanpham, Sanphamdetail } from "./Reducer/ProductReducer";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
 const Home = (props) => {
   const { navigation } = props;
   const dispatch = useDispatch();
-  const { productData, productStatus } = useSelector((state) => state.product);
-  const gotodetail = () => {
-    navigation.navigate("Detail");
+  const { productData, productStatus, productdetailData, productdetailStatus } = useSelector(
+    (state) => state.product
+  );
+
+
+  const gotodetail = (id) => {
+    dispatch(Sanphamdetail(id));
+    console.log(id);
   };
   const golistplant = () => {
     navigation.navigate("ListPlant");
@@ -29,10 +34,16 @@ const Home = (props) => {
   useEffect(() => {
     dispatch(Sanpham());
   }, []);
+
+  useEffect(() => {
+    if (productdetailStatus == "succeeded") {
+      navigation.navigate("Detail");
+    }
+  }, [productdetailStatus]);
   const renderItem = ({ item }) => {
-    const { _id, name, type, price, image } = item;
+    const { _id, name, category, price, image } = item;
     return (
-      <TouchableOpacity style={styles.bgitem} activeOpacity={0.5} onPress={() => gotodetail()}>
+      <TouchableOpacity style={styles.bgitem} activeOpacity={0.5} onPress={() => gotodetail(_id)}>
         <View style={styles.bgimg}>
           <Image
             style={{ flex: 1 }}
@@ -42,7 +53,7 @@ const Home = (props) => {
           />
         </View>
         <Text style={styles.txt4}>{name}</Text>
-        <Text style={styles.txt5}>{type}</Text>
+        <Text style={styles.txt5}>{category.name}</Text>
         <Text style={styles.txt6}>{price} đ</Text>
       </TouchableOpacity>
     );

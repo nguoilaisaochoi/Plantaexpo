@@ -9,24 +9,44 @@ import {
   FlatList,
   TouchableOpacity,
 } from "react-native";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Header from "./Compo/Header";
+import { useDispatch, useSelector } from "react-redux";
+import { Timsanpham } from "./Reducer/ProductReducer";
+
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
 const Search = () => {
-  const [Data] = useState(data);
+  const [input, setInput] = useState("");
+  const dispatch = useDispatch();
+  const { prroductfindData, prroductfindStatus } = useSelector((state) => state.product);
+  const [Data, setData] = useState([]);
+  useEffect(() => {
+    console.log(input);
+    if (input.length < 1) {
+      setData([]);
+    } else {
+      dispatch(Timsanpham(input));
+    }
+  }, [input]);
+  useEffect(() => {
+    if (prroductfindStatus == "succeeded") {
+      setData(prroductfindData);
+    }
+    console.log(prroductfindStatus);
+  }, [prroductfindStatus]);
   const renderitem = ({ item }) => {
-    const { id, date, price, name, category, quantity, img } = item;
+    const { _id, price, name, category, quantity, image } = item;
     return (
       <TouchableOpacity style={styles.view5}>
         <View style={styles.view4}>
           <View style={styles.view2img}>
-            <Image style={{ width: 77, height: 77 }} source={img} />
+            <Image style={{ width: 77, height: 77 }} source={{ uri: `${image}` }} />
           </View>
           <View style={{ flexDirection: "column", marginLeft: 15 }}>
             <View>
               <Text style={styles.txt3}>
-                {name} | <Text style={{ color: "#7D7B7B" }}>{category}</Text>
+                {name} | <Text style={{ color: "#7D7B7B" }}>{category.name}</Text>
               </Text>
             </View>
             <Text>{price}đ</Text>
@@ -42,15 +62,17 @@ const Search = () => {
 
       <View style={styles.view2}>
         <View style={styles.view1}>
-          <TextInput style={styles.input1} placeholder="Tìm kiếm" />
+          <TextInput
+            style={styles.input1}
+            placeholder="Tìm kiếm"
+            value={input}
+            onChangeText={(text) => setInput(text)}
+          />
           <Image style={styles.img1} source={require("../assets/img/search.png")} />
         </View>
-        <FlatList
-          data={Data}
-          renderItem={renderitem}
-          keyExtractor={(item) => item.id}
-          scrollEnabled={false}
-        />
+        <View style={{ flexGrow: 1 }}>
+          <FlatList data={Data} renderItem={renderitem} keyExtractor={(item) => item._id} />
+        </View>
       </View>
     </View>
   );

@@ -3,7 +3,7 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
-const Header = ({ txt, img, imgdel, imgl }, props) => {
+const Header = ({ txt, img, imgdel, imgl, btn1 }, props) => {
   const navigation = useNavigation();
   const gotocart = () => {
     navigation.navigate("Cart");
@@ -20,7 +20,7 @@ const Header = ({ txt, img, imgdel, imgl }, props) => {
         </TouchableOpacity>
       )}
       {!!imgdel && (
-        <TouchableOpacity style={styles.img2} activeOpacity={0.5} onPress={() => gotocart()}>
+        <TouchableOpacity style={styles.img2} activeOpacity={0.5} onPress={btn1}>
           <Image style={{ width: 26, height: 26 }} source={imgdel} />
         </TouchableOpacity>
       )}
@@ -31,15 +31,19 @@ const Header = ({ txt, img, imgdel, imgl }, props) => {
 export default Header;
 const styles = StyleSheet.create({
   container: {
-    height: height * 0.11,
+    height: height * 0.095,
   },
   txt1: {
     // Spider Plant
     alignSelf: "center",
     color: "#221F1F",
     fontSize: 18,
+    width: "70%",
+    height: "80%",
+    flexWrap: "wrap",
     fontFamily: "Lato Medium",
     marginTop: height * 0.055,
+    textAlign: "center",
   },
   img1: {
     //back

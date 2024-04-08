@@ -1,12 +1,15 @@
 import { configureStore } from "@reduxjs/toolkit";
-import RegisterReducer from "../Reducer/RegisterReducer";
-import LoginReducer from "../Reducer/LoginReducer";
+import UserReducer from "../Reducer/UserReducer";
 import ProductReducer from "../Reducer/ProductReducer";
+import ProductDetailReducer from "../Reducer/ProductDetailReducer";
+import CartReducer from "../Reducer/CartReducer";
+import CategoryReducer from "../Reducer/CategoryReducer";
 
 export const store = configureStore({
   reducer: {
-    register: RegisterReducer,
-    login: LoginReducer,
+    user: UserReducer,
     product: ProductReducer,
+    category: CategoryReducer,
+    cart: CartReducer,
   },
 });

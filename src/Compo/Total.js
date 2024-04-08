@@ -3,7 +3,10 @@ import React from "react";
 import { useNavigation } from "@react-navigation/native";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
-const Total = ({ txt1, price1, txt2, price2, txt3, price3, txt4, txt5, txt6, btn6 }, props) => {
+const Total = (
+  { txt1, price1, txt2, price2, txt3, price3, txt4, txt5, txt6, btn6, btn7 },
+  props
+) => {
   const navigation = useNavigation();
   const gotopay = () => {
     navigation.navigate("Pay");
@@ -38,7 +41,7 @@ const Total = ({ txt1, price1, txt2, price2, txt3, price3, txt4, txt5, txt6, btn
         </TouchableOpacity>
       )}
       {!!txt5 && (
-        <TouchableOpacity style={styles.touch2} activeOpacity={0.5} onPress={() => gotopay()}>
+        <TouchableOpacity style={styles.touch2} activeOpacity={0.5} onPress={btn7}>
           <Text style={[styles.txt4, { color: "white", fontSize: 16 }]}>{txt5}</Text>
         </TouchableOpacity>
       )}

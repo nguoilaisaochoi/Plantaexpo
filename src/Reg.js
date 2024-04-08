@@ -14,7 +14,8 @@ import { LinearGradient } from "expo-linear-gradient";
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
 import { useDispatch, useSelector } from "react-redux";
-import { DangKyTaiKhoan } from "./Reducer/RegisterReducer";
+import { DangKyTaiKhoan } from "./Reducer/UserReducer";
+
 const Reg = (props) => {
   const { navigation } = props;
   const [hoten, Sethoten] = useState("");
@@ -25,7 +26,7 @@ const Reg = (props) => {
   const [showpass, setShowpass] = useState(false);
   const [isRegistered, setIsRegistered] = useState(false);
   const dispatch = useDispatch();
-  const { registerData, registerStatus } = useSelector((state) => state.register);
+  const { registerData, registerStatus } = useSelector((state) => state.user);
 
   const showpassword = () => {
     setShowpass(!showpass);
@@ -47,20 +48,17 @@ const Reg = (props) => {
         goback();
       }
     }
+    console.log(`tình trạng đăng kí: ${registerStatus}`);
   }, [registerStatus]);
-  const checkreg = async () => {
-    try {
-      const body = {
-        name: hoten,
-        email: username,
-        phone: sdt,
-        password: password,
-      };
-      dispatch(DangKyTaiKhoan(body));
-    } catch (error) {
-      Alert.alert("Lỗi", error.message);
-      console.log(error.message);
-    }
+  const checkreg = () => {
+    const body = {
+      name: hoten,
+      email: username,
+      phone: sdt,
+      password: password,
+    };
+    dispatch(DangKyTaiKhoan(body));
+    console.log("đang gửi yếu cầu đk..");
   };
   const goback = () => {
     navigation.navigate("Login");
