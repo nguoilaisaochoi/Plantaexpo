@@ -13,6 +13,8 @@ export const DSGioHangAdd = createAsyncThunk("cart/add", async (data) => {
 
 export const DSGioHangDel = createAsyncThunk("cart/del", async (data) => {
   const response = await AxiosInstance.post("cart/del", data);
+  console.log(data);
+  console.log(response.data);
   return response.data;
 });
 

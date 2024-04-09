@@ -22,6 +22,7 @@ const Detail = () => {
   const { loginData, loginStatus } = useSelector((state) => state.user);
   const { cartAddStatus } = useSelector((state) => state.cart);
   const [count, setCount] = useState(1);
+  const [total, setTotal] = useState([]);
   const [onpress, setOnpress] = useState(false);
   const tangcount = () => {
     if (count >= productdetailData.quantity) {
@@ -51,6 +52,23 @@ const Detail = () => {
       ToastAndroid.show("Đã thêm vào giỏ hàng", ToastAndroid.SHORT);
     }
   }, [cartAddStatus]);
+
+  useEffect(() => {
+    const tong = parseInt(productdetailData.price * count);
+    const formattedTotal = tong.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
+    setTotal(formattedTotal);
+  }, [count]);
+  const chuyentien = (data) => {
+    const inttovnd = data.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
+    return inttovnd;
+  };
+
   return (
     <View style={{ backgroundColor: "white", flex: 1, justifyContent: "space-between" }}>
       <Header
@@ -83,7 +101,7 @@ const Detail = () => {
           <Text style={styles.txt2}>{productdetailData.category.name}</Text>
         </View>
       </View>
-      <Text style={styles.txt3}>{productdetailData.price}đ</Text>
+    <Text style={styles.txt3}>{chuyentien(productdetailData.price)}</Text>
       <View style={styles.view4}>
         <Text style={styles.txt4}>Chi tiết sản phẩm </Text>
       </View>
@@ -101,7 +119,7 @@ const Detail = () => {
       </View>
 
       <View style={styles.view6}>
-        <Text>Đã chọn 1 sản phẩm</Text>
+        <Text>Đã chọn {count} sản phẩm</Text>
         <Text>Tạm tính</Text>
       </View>
 
@@ -125,7 +143,7 @@ const Detail = () => {
             />
           </TouchableOpacity>
         </View>
-        <Text style={[styles.txt6, { fontSize: baseFontSize }]}>{productdetailData.price}đ</Text>
+        <Text style={[styles.txt6, { fontSize: baseFontSize }]}>{total}</Text>
       </View>
       <TouchableOpacity onPress={() => giohang()} style={styles.touch2} activeOpacity={0.7}>
         <Text style={styles.txt7}>Thêm vào giỏ hàng</Text>

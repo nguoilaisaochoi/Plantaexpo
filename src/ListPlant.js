@@ -44,12 +44,22 @@ const ListPlant = (props) => {
       }
       setDatacate([{ _id: "all", name: "Tất cả" }, ...categoryData.data]);
     }
-  }, [selectedindex]);
+  }, [selectedindex, categoryStatus]);
   useEffect(() => {
     if (productdetailStatus == "succeeded" && onPress) {
       navigation.navigate("Detail");
     }
   }, [productdetailStatus]);
+
+  const chuyentien = (data) => {
+    const int = parseInt(data);
+    const inttovnd = int.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
+    return inttovnd;
+  };
+
   const renderMenu = ({ item }) => {
     return (
       <TouchableOpacity onPress={() => setselectedIndex(item._id)} activeOpacity={0.6}>
@@ -75,7 +85,7 @@ const ListPlant = (props) => {
         </View>
         <Text style={styles.txt4}>{name}</Text>
         <Text style={styles.txt5}>{type}</Text>
-        <Text style={styles.txt6}>{price} đ</Text>
+        <Text style={styles.txt6}>{chuyentien(price)}</Text>
       </TouchableOpacity>
     );
   };

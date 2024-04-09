@@ -19,7 +19,6 @@ const Home = (props) => {
     (state) => state.product
   );
 
-
   const gotodetail = (id) => {
     dispatch(Sanphamdetail(id));
     console.log(id);
@@ -40,6 +39,16 @@ const Home = (props) => {
       navigation.navigate("Detail");
     }
   }, [productdetailStatus]);
+
+  const chuyentien = (data) => {
+    const gia = parseInt(data);
+    const inttovnd = gia.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
+    return inttovnd;
+  };
+
   const renderItem = ({ item }) => {
     const { _id, name, category, price, image } = item;
     return (
@@ -54,7 +63,7 @@ const Home = (props) => {
         </View>
         <Text style={styles.txt4}>{name}</Text>
         <Text style={styles.txt5}>{category.name}</Text>
-        <Text style={styles.txt6}>{price} đ</Text>
+        <Text style={styles.txt6}>{chuyentien(price)}</Text>
       </TouchableOpacity>
     );
   };

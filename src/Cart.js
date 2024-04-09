@@ -21,33 +21,38 @@ const Cart = (props) => {
   const { navigation } = props;
   const [Data, setData] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [DelItem, setDelItem] = useState([]);
+  const [total, setTotal] = useState([]);
   const dispatch = useDispatch();
-  const { loginData, loginStatus } = useSelector((state) => state.user);
+  const { userData, userStatus } = useSelector((state) => state.user);
   const { cartlistData, cartlistStatus, cartDelStatus } = useSelector((state) => state.cart);
 
   const gotopay = () => {
     navigation.navigate("Pay");
   };
-  const delitem = () => {
+  const delitem = (idproduct) => {
     const body = {
-      iduser: loginData.data._id,
-      idproduct: DelItem,
+      iduser: userData.data._id,
+      idproduct: idproduct,
     };
     dispatch(DSGioHangDel(body));
   };
 
   const delmanyitem = () => {
     const body = {
-      iduser: loginData.data._id,
+      iduser: userData.data._id,
       idproduct: selectedItems,
     };
     dispatch(DSGioHangDel(body));
   };
+
   useEffect(() => {
-    dispatch(DSGioHang(loginData.data._id));
+    console.log(cartDelStatus);
+  }, [cartDelStatus]);
+
+  useEffect(() => {
+    dispatch(DSGioHang(userData.data._id));
     if (cartDelStatus == "succeeded") {
-      dispatch(DSGioHang(loginData.data._id));
+      dispatch(DSGioHang(userData.data._id));
     }
   }, [cartDelStatus]);
 
@@ -56,6 +61,15 @@ const Cart = (props) => {
       setData(cartlistData.data.products);
     }
   }, [cartlistStatus]);
+
+  const chuyentien = (data) => {
+    const int = parseInt(data);
+    const inttovnd = int.toLocaleString("vi-VN", {
+      style: "currency",
+      currency: "VND",
+    });
+    return inttovnd;
+  };
   const renderItems = ({ item }) => {
     const { productsId, productname, productimage, productcategory, productprice, quantity } = item;
     const isSelected = selectedItems.includes(productsId);
@@ -63,7 +77,6 @@ const Cart = (props) => {
       const index = selectedItems.indexOf(itemId);
       if (index !== -1) {
         console.log(selectedItems);
-        console.log(DelItem);
         const newSelectedItems = [...selectedItems];
         newSelectedItems.splice(index, 1);
         setSelectedItems(newSelectedItems);
@@ -77,7 +90,7 @@ const Cart = (props) => {
         style={styles.view1}
         activeOpacity={0.6}
         onPress={() => {
-          toggleSelectItem(productsId), setDelItem(productsId);
+          toggleSelectItem(productsId);
         }}
       >
         <Image
@@ -105,7 +118,7 @@ const Cart = (props) => {
               {productname} | <Text style={{ color: "#7D7B7B" }}>{productcategory}</Text>
             </Text>
           </View>
-          <Text style={[styles.txt3, { color: "#007537" }]}>{productprice}đ</Text>
+          <Text style={[styles.txt3, { color: "#007537" }]}>{chuyentien(productprice)}</Text>
           <View style={styles.view3}>
             <View style={{ flexDirection: "row", alignItems: "center" }}>
               <TouchableOpacity activeOpacity={0.5}>
@@ -122,7 +135,7 @@ const Cart = (props) => {
                 />
               </TouchableOpacity>
             </View>
-            <Text style={styles.txt2} onPress={() => delitem()}>
+            <Text style={styles.txt2} onPress={() => delitem(productsId)}>
               Xoá
             </Text>
           </View>
@@ -141,7 +154,7 @@ const Cart = (props) => {
       <View style={styles.flatlist}>
         <FlatList data={Data} keyExtractor={(item) => item._id} renderItem={renderItems} />
       </View>
-      <Total txt1={"Tạm tính"} price1={"000.000đ"} txt4={"Tiến hành thanh toán"} />
+      <Total  txt4={"Tiến hành thanh toán"} />
     </View>
   );
 };
