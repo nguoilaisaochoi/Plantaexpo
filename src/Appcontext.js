@@ -4,6 +4,7 @@ export const Appcontext = createContext();
 export const Appprovider = (props) => {
   const [islogin, setIsLogin] = useState(false);
   const [user, setUser] = useState("");
+  const [fromcard, setfromcard] = useState(false);
   return (
     <Appcontext.Provider
       value={{
@@ -11,6 +12,8 @@ export const Appprovider = (props) => {
         setIsLogin,
         user,
         setUser,
+        fromcard,
+        setfromcard,
       }}
     >
       {props.children}

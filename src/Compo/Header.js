@@ -1,9 +1,10 @@
 import { View, Text, StyleSheet, Image, TouchableOpacity, Dimensions } from "react-native";
-import React from "react";
+import React, { useContext } from "react";
 import { useNavigation } from "@react-navigation/native";
+
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
-const Header = ({ txt, img, imgdel, imgl, btn1 }, props) => {
+const Header = ({ txt, img, imgdel, imgl, btn1, btn2 }, props) => {
   const navigation = useNavigation();
   const gotocart = () => {
     navigation.navigate("Cart");

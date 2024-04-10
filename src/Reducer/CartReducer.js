@@ -18,6 +18,13 @@ export const DSGioHangDel = createAsyncThunk("cart/del", async (data) => {
   return response.data;
 });
 
+export const DSGioHangUpdate = createAsyncThunk("cart/update", async (data) => {
+  const response = await AxiosInstance.post("cart/update", data);
+  console.log(data);
+  console.log(response.data);
+  return response.data;
+});
+
 export const cartListSlice = createSlice({
   name: "cartlist",
   initialState: {
@@ -27,6 +34,8 @@ export const cartListSlice = createSlice({
     cartDelStatus: "idle",
     cartAddData: {},
     cartAddStatus: "idle",
+    cartUpdateData: {},
+    cartUpdateStatus: "idle",
   },
   reducers: {},
   extraReducers: (builder) => {
@@ -62,6 +71,17 @@ export const cartListSlice = createSlice({
       })
       .addCase(DSGioHangAdd.rejected, (state, action) => {
         state.cartAddStatus = "failed";
+        console.log(action.error.message);
+      })
+      .addCase(DSGioHangUpdate.pending, (state, action) => {
+        state.cartUpdateStatus = "loading";
+      })
+      .addCase(DSGioHangUpdate.fulfilled, (state, action) => {
+        state.cartUpdateStatus = "succeeded";
+        state.cartUpdateData = action.payload;
+      })
+      .addCase(DSGioHangUpdate.rejected, (state, action) => {
+        state.cartUpdateStatus = "failed";
         console.log(action.error.message);
       });
   },

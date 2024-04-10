@@ -16,27 +16,42 @@ const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
 import { useDispatch, useSelector } from "react-redux";
 import { DSGioHang, DSGioHangDel } from "./Reducer/CartReducer";
+import { Sanphamdetail } from "./Reducer/ProductReducer";
+import { Appcontext } from "./Appcontext";
 
 const Cart = (props) => {
   const { navigation } = props;
   const [Data, setData] = useState([]);
   const [selectedItems, setSelectedItems] = useState([]);
-  const [total, setTotal] = useState([]);
+  const [total, Settotal] = useState(0);
+  const [goto, setGoto] = useState(false);
   const dispatch = useDispatch();
   const { userData, userStatus } = useSelector((state) => state.user);
-  const { cartlistData, cartlistStatus, cartDelStatus } = useSelector((state) => state.cart);
-
+  const { cartlistData, cartlistStatus, cartDelStatus, cartUpdateStatus } = useSelector(
+    (state) => state.cart
+  );
+  const { productdetailStatus } = useSelector((state) => state.product);
+  const { fromcard, setfromcard } = useContext(Appcontext);
   const gotopay = () => {
     navigation.navigate("Pay");
   };
-  const delitem = (idproduct) => {
-    const body = {
-      iduser: userData.data._id,
-      idproduct: idproduct,
-    };
-    dispatch(DSGioHangDel(body));
-  };
 
+  const gotodetail = (id) => {
+    dispatch(Sanphamdetail(id));
+    setGoto(true);
+    setfromcard(true);
+    console.log(fromcard);
+  };
+  useEffect(() => {
+    return () => {
+      setfromcard(false);
+    };
+  }, []);
+  useEffect(() => {
+    if (productdetailStatus == "succeeded" && goto) {
+      navigation.navigate("Detail");
+    }
+  }, [productdetailStatus]);
   const delmanyitem = () => {
     const body = {
       iduser: userData.data._id,
@@ -54,7 +69,7 @@ const Cart = (props) => {
     if (cartDelStatus == "succeeded") {
       dispatch(DSGioHang(userData.data._id));
     }
-  }, [cartDelStatus]);
+  }, [cartDelStatus, cartUpdateStatus]);
 
   useEffect(() => {
     if (cartlistData && cartlistData.data) {
@@ -70,6 +85,18 @@ const Cart = (props) => {
     });
     return inttovnd;
   };
+  const settotal = () => {
+    let totalPrice = 0;
+    Data.forEach((item) => {
+      if (selectedItems.includes(item.productsId)) {
+        totalPrice += parseInt(item.productprice);
+      }
+    });
+    Settotal(totalPrice);
+  };
+  useEffect(() => {
+    settotal();
+  }, [selectedItems]);
   const renderItems = ({ item }) => {
     const { productsId, productname, productimage, productcategory, productprice, quantity } = item;
     const isSelected = selectedItems.includes(productsId);
@@ -84,23 +111,27 @@ const Cart = (props) => {
         setSelectedItems([...selectedItems, itemId]);
       }
     };
-
     return (
       <TouchableOpacity
         style={styles.view1}
         activeOpacity={0.6}
-        onPress={() => {
-          toggleSelectItem(productsId);
-        }}
+        onPress={() => gotodetail(productsId)}
       >
-        <Image
-          style={styles.img1}
-          source={
-            isSelected
-              ? require("../assets/img/checked.png")
-              : require("../assets/img/noncheck.png")
-          }
-        />
+        <TouchableOpacity
+          style={styles.touch2}
+          onPress={() => {
+            toggleSelectItem(productsId);
+          }}
+        >
+          <Image
+            style={styles.img1}
+            source={
+              isSelected
+                ? require("../assets/img/checked.png")
+                : require("../assets/img/noncheck.png")
+            }
+          />
+        </TouchableOpacity>
 
         <View style={styles.view2}>
           <View style={{ width: 77, height: 77 }}>
@@ -120,24 +151,10 @@ const Cart = (props) => {
           </View>
           <Text style={[styles.txt3, { color: "#007537" }]}>{chuyentien(productprice)}</Text>
           <View style={styles.view3}>
-            <View style={{ flexDirection: "row", alignItems: "center" }}>
-              <TouchableOpacity activeOpacity={0.5}>
-                <Image
-                  style={{ width: width * 0.07, height: height * 0.04 }}
-                  source={require("../assets/img/giam.png")}
-                />
-              </TouchableOpacity>
+            <View style={styles.view7}>
+              <Text style={styles.txt1}>Số lượng: </Text>
               <Text style={styles.txt1}>{quantity}</Text>
-              <TouchableOpacity activeOpacity={0.5}>
-                <Image
-                  style={{ width: width * 0.07, height: height * 0.04 }}
-                  source={require("../assets/img/tang.png")}
-                />
-              </TouchableOpacity>
             </View>
-            <Text style={styles.txt2} onPress={() => delitem(productsId)}>
-              Xoá
-            </Text>
           </View>
         </View>
       </TouchableOpacity>
@@ -147,19 +164,30 @@ const Cart = (props) => {
     <View style={{ flex: 1, backgroundColor: "white" }}>
       <Header
         txt="Giỏ hàng"
-        imgdel={require("../assets/img/trash.png")}
+        imgdel={selectedItems.length < 1 ? null : require("../assets/img/trash.png")}
         imgl={require("../assets/img/backnobg.png")}
         btn1={delmanyitem}
       />
       <View style={styles.flatlist}>
         <FlatList data={Data} keyExtractor={(item) => item._id} renderItem={renderItems} />
       </View>
-      <Total  txt4={"Tiến hành thanh toán"} />
+      <Total txt1={"Tạm tính"} price1={chuyentien(total)} txt4={"Tiến hành thanh toán"} />
     </View>
   );
 };
 export default Cart;
 const styles = StyleSheet.create({
+  touch2: {
+    //img plant
+    width: width * 0.18,
+    height: height * 0.1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  view7: {
+    flexDirection: "row",
+    alignItems: "center",
+  },
   flatlist: {
     height: "70%",
   },
@@ -213,10 +241,7 @@ const styles = StyleSheet.create({
   txt1: {
     // 2
     color: "black",
-    fontSize: 16,
     fontFamily: "Lato Medium",
-    marginLeft: 15,
-    marginRight: 15,
   },
   view3: {
     //tang giam xoa

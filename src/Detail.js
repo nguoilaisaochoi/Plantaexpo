@@ -7,10 +7,11 @@ import {
   Dimensions,
   ToastAndroid,
 } from "react-native";
-import React, { useEffect, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Header from "./Compo/Header";
 import { useDispatch, useSelector } from "react-redux";
-import { DSGioHang, DSGioHangAdd } from "./Reducer/CartReducer";
+import { DSGioHang, DSGioHangAdd, DSGioHangUpdate } from "./Reducer/CartReducer";
+import { Appcontext } from "./Appcontext";
 
 const { height } = Dimensions.get("window");
 const { width } = Dimensions.get("window");
@@ -24,6 +25,17 @@ const Detail = () => {
   const [count, setCount] = useState(1);
   const [total, setTotal] = useState([]);
   const [onpress, setOnpress] = useState(false);
+  const { fromcard } = useContext(Appcontext);
+  const { cartlistData, cartUpdateStatus } = useSelector((state) => state.cart);
+  useEffect(() => {
+    if (fromcard) {
+      cartlistData.data.products.find((item) => {
+        if (item.productsId == productdetailData._id) {
+          setCount(parseInt(item.quantity));
+        }
+      });
+    }
+  }, []);
   const tangcount = () => {
     if (count >= productdetailData.quantity) {
       return;
@@ -43,24 +55,29 @@ const Detail = () => {
       iduser: loginData.data._id,
       idproduct: productdetailData._id,
       quantitybuy: count,
+      productprice: total,
     };
-    dispatch(DSGioHangAdd(body));
+    if (fromcard) {
+      dispatch(DSGioHangUpdate(body));
+    } else {
+      dispatch(DSGioHangAdd(body));
+    }
     setOnpress(true);
   };
   useEffect(() => {
     if (cartAddStatus == "succeeded" && onpress) {
       ToastAndroid.show("Đã thêm vào giỏ hàng", ToastAndroid.SHORT);
     }
-  }, [cartAddStatus]);
+    if (cartUpdateStatus == "succeeded" && onpress && fromcard) {
+      ToastAndroid.show("Đã cập nhật giỏ hàng", ToastAndroid.SHORT);
+    }
+  }, [cartUpdateStatus, cartAddStatus]);
 
   useEffect(() => {
     const tong = parseInt(productdetailData.price * count);
-    const formattedTotal = tong.toLocaleString("vi-VN", {
-      style: "currency",
-      currency: "VND",
-    });
-    setTotal(formattedTotal);
+    setTotal(tong);
   }, [count]);
+
   const chuyentien = (data) => {
     const inttovnd = data.toLocaleString("vi-VN", {
       style: "currency",
@@ -73,7 +90,6 @@ const Detail = () => {
     <View style={{ backgroundColor: "white", flex: 1, justifyContent: "space-between" }}>
       <Header
         txt={productdetailData.name}
-        img={require("../assets/img/cartnobg.png")}
         imgl={require("../assets/img/backnobg.png")}
       />
       <View style={styles.view1}>
@@ -101,7 +117,7 @@ const Detail = () => {
           <Text style={styles.txt2}>{productdetailData.category.name}</Text>
         </View>
       </View>
-    <Text style={styles.txt3}>{chuyentien(productdetailData.price)}</Text>
+      <Text style={styles.txt3}>{chuyentien(productdetailData.price)}</Text>
       <View style={styles.view4}>
         <Text style={styles.txt4}>Chi tiết sản phẩm </Text>
       </View>
@@ -143,10 +159,10 @@ const Detail = () => {
             />
           </TouchableOpacity>
         </View>
-        <Text style={[styles.txt6, { fontSize: baseFontSize }]}>{total}</Text>
+        <Text style={[styles.txt6, { fontSize: baseFontSize }]}>{chuyentien(total)}</Text>
       </View>
       <TouchableOpacity onPress={() => giohang()} style={styles.touch2} activeOpacity={0.7}>
-        <Text style={styles.txt7}>Thêm vào giỏ hàng</Text>
+        <Text style={styles.txt7}>{fromcard ? "Cập nhật giỏ hàng" : "Thêm vào giỏ hàng"}</Text>
       </TouchableOpacity>
     </View>
   );
